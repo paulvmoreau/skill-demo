@@ -1,7 +1,7 @@
 {
   "hosting": {
     "site": "skill-demo-41dd3",
-    "public": "dist",
+    "public": "dist/skill-demo",
     "ignore": [
       "firebase.json",
       "**/.*",
