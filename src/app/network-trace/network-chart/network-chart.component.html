@@ -1,0 +1,20 @@
+<div class="overall-container">
+  <div id="chartdiv"></div>
+  <div class="trace">
+    <div class="title">Trace between</div>
+    <ng-container *ngFor="let node of twoPointTrace; last as isLast">
+      {{node.name}} <ng-container *ngIf="!isLast">and</ng-container>
+    </ng-container>
+    <ng-container *ngIf="trace.length > 0">
+      <div>Trace Path</div>
+      <ng-container *ngFor="let node of trace; last as isLast">
+        {{node}} <ng-container *ngIf="!isLast">-></ng-container>
+      </ng-container>
+    </ng-container>
+    <ng-container *ngIf="noConnectionError">
+      <div>
+        No connection between nodes
+      </div>
+    </ng-container>
+  </div>
+</div>

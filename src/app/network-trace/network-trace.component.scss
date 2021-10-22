@@ -1,0 +1,43 @@
+.overall-container {
+  height: 100%;
+  display: flex;
+  flex-flow: column;
+  padding: 20px;
+}
+
+.header {
+	font-size: 16px;
+	font-weight: 500;
+}
+
+.sub-header {
+	font-size: 12px;
+	font-weight: 400;
+}
+
+.nodes-container {
+  padding: 20px;
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+}
+.loading {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.inputs {
+  display: flex;
+  align-items: center;
+}
+.connection-complexity-container {
+  display: flex;
+  flex-flow: column;
+  margin-left: 10px;
+  label {
+    font-size: 10px;
+    margin-left: 9px;
+    color: rgba(0,0,0,.54);
+  }
+}

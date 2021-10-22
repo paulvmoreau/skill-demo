@@ -1,0 +1,13 @@
+<mat-toolbar color="primary">
+	<button mat-icon-button [matMenuTriggerFor]="menu" class="navigation-icon"
+		aria-label="dropdown button for navigation">
+		<mat-icon>menu</mat-icon>
+	</button>
+</mat-toolbar>
+
+<mat-menu #menu="matMenu">
+	<button mat-menu-item routerLink="/network">
+		<mat-icon aria-hidden="true">language</mat-icon>
+		<span>Network Trace</span>
+	</button>
+</mat-menu>
