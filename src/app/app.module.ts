@@ -16,6 +16,20 @@ import {MatInputModule} from '@angular/material/input';
 import {FormsModule} from "@angular/forms";
 import {MatSliderModule} from "@angular/material/slider";
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
+import {AngularFireModule} from "@angular/fire/compat";
+import {AngularFirestoreModule} from "@angular/fire/compat/firestore";
+import {AngularFireAuthModule} from "@angular/fire/compat/auth";
+import {AngularFireStorageModule} from "@angular/fire/compat/storage";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBi0LvdNZleOvpPpZv9EXsQ9YqQ-aZRcaM",
+  authDomain: "skill-demo-41dd3.firebaseapp.com",
+  projectId: "skill-demo-41dd3",
+  storageBucket: "skill-demo-41dd3.appspot.com",
+  messagingSenderId: "542168834515",
+  appId: "1:542168834515:web:c15a2bdc27c200675ccf26",
+  measurementId: "G-VRYPK69560"
+};
 
 @NgModule({
   declarations: [
@@ -36,7 +50,11 @@ import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
     MatInputModule,
     FormsModule,
     MatSliderModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    AngularFireModule.initializeApp(firebaseConfig),
+    AngularFirestoreModule, // firestore
+    AngularFireAuthModule, // auth
+    AngularFireStorageModule // storage
   ],
   providers: [],
   bootstrap: [AppComponent]
