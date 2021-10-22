@@ -1,5 +1,6 @@
 {
   "hosting": {
+    "site": "skill-demo-41dd3",
     "public": "src",
     "ignore": [
       "firebase.json",
