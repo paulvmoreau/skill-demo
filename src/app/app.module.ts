@@ -20,6 +20,7 @@ import {AngularFireModule} from "@angular/fire/compat";
 import {AngularFirestoreModule} from "@angular/fire/compat/firestore";
 import {AngularFireAuthModule} from "@angular/fire/compat/auth";
 import {AngularFireStorageModule} from "@angular/fire/compat/storage";
+import {MatTableModule} from "@angular/material/table";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBi0LvdNZleOvpPpZv9EXsQ9YqQ-aZRcaM",
@@ -39,23 +40,25 @@ const firebaseConfig = {
     AppFooterComponent,
     NetworkChartComponent
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    MatToolbarModule,
-    BrowserAnimationsModule,
-    MatIconModule,
-    MatButtonModule,
-    MatMenuModule,
-    MatInputModule,
-    FormsModule,
-    MatSliderModule,
-    MatProgressSpinnerModule,
-    AngularFireModule.initializeApp(firebaseConfig),
-    AngularFirestoreModule, // firestore
-    AngularFireAuthModule, // auth
-    AngularFireStorageModule // storage
-  ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        MatToolbarModule,
+        BrowserAnimationsModule,
+        MatIconModule,
+        MatButtonModule,
+        MatMenuModule,
+        MatInputModule,
+        FormsModule,
+        MatSliderModule,
+        MatProgressSpinnerModule,
+        AngularFireModule.initializeApp(firebaseConfig),
+        AngularFirestoreModule, // firestore
+        AngularFireAuthModule, // auth
+        AngularFireStorageModule,
+        MatTableModule,
+        // storage
+    ],
   providers: [],
   bootstrap: [AppComponent]
 })

@@ -5,8 +5,15 @@ import am4themes_dataviz from "@amcharts/amcharts4/themes/dataviz";
 import {Component, Input, OnInit} from "@angular/core";
 import {LineSeries, XYChart} from "@amcharts/amcharts4/charts";
 import {NetworkNode} from "../networknode";
+import {Observable, Subject} from "rxjs";
 
 am4core.useTheme(am4themes_dataviz);
+
+interface TableTrace {
+  from: string;
+  to: string;
+  distance: number
+}
 
 @Component({
   selector: 'app-network-chart',
@@ -17,14 +24,23 @@ export class NetworkChartComponent implements OnInit {
   @Input() nodes!: NetworkNode[];
 
   twoPointTrace: NetworkNode[] = [];
-  trace: string[] = [];
+  trace: NetworkNode[] = [];
+  tableTrace: TableTrace[] = [];
   noConnectionError!: boolean;
+  displayedColumns: string[] = ['from', 'to', 'distance'];
+  traceDistance: number = 0;
+  tableTrace$: Subject<TableTrace[]> = new Subject<TableTrace[]>();
+  private _tableTraceObs: Observable<TableTrace[]> = this.tableTrace$.asObservable();
 
   private traceSeries!: LineSeries;
   private chart!: XYChart;
   private networkSeries!: LineSeries;
 
   constructor() {
+  }
+
+  get tableTraceObs(): Observable<TableTrace[]> {
+    return this._tableTraceObs;
   }
 
   ngOnInit(): void {
@@ -164,15 +180,18 @@ export class NetworkChartComponent implements OnInit {
       this.drawTrace();
     } else {
       this.trace = [];
+      this.tableTrace = [];
       this.traceSeries.hide();
     }
   }
 
   private drawTrace() {
-    const start = this.twoPointTrace[0];
-    const destination = this.twoPointTrace[1];
-    const trace = [start];
+    const start: NetworkNode = this.twoPointTrace[0];
+    const destination: NetworkNode = this.twoPointTrace[1];
+    this.trace = [start];
+    this.tableTrace = [];
     if (destination) {
+      this.traceDistance = start.map[destination.name].distance;
       if (!NetworkChartComponent.checkForConnection(start, destination)) {
         this.trace = [];
         this.noConnectionError = true;
@@ -180,32 +199,52 @@ export class NetworkChartComponent implements OnInit {
       } else {
         this.noConnectionError = false;
       }
-      if (start.map[destination.name].viaNode === start.name) {
-        trace.push(destination);
+
+      if (start.map[destination.name].viaNode === start.name) {    // Direct connection
+        this.trace.push(destination);
+        this.tableTrace.push({
+          from: start.name,
+          to: destination.name,
+          distance: start.map[destination.name].distance
+        });
       } else {
         let lead = start.map[destination.name].viaNode;
+        this.tableTrace.push({
+          from: start.name,
+          to: lead,
+          distance: start.map[lead].distance
+        })
         while (lead !== destination.name) {
           const nextNode = this.nodes.filter((node) => {
             return node.name === lead;
           })[0];
-          trace.push(nextNode);
-          if (lead === nextNode.map[destination.name].viaNode) {
+          this.trace.push(nextNode);
+          const viaNode = nextNode.map[destination.name].viaNode
+          if (lead === viaNode) { // direct connection
             lead = destination.name;
-            trace.push(destination);
+            this.trace.push(destination);
+            this.tableTrace.push({
+              from: lead,
+              to: destination.name,
+              distance: nextNode.map[destination.name].distance
+            })
           } else {
-            lead = nextNode.map[destination.name].viaNode;
+            this.tableTrace.push({
+              from: lead,
+              to: viaNode,
+              distance: nextNode.map[viaNode].distance
+            })
+            lead = viaNode;
           }
         }
       }
     }
-    this.trace = trace.map((node) => {
-      return node.name;
-    });
-    this.traceSeries.data = trace;
+    this.tableTrace$.next(this.tableTrace);
+    this.traceSeries.data = this.trace;
     this.traceSeries.show();
   }
 
   private static checkForConnection(start: NetworkNode, destination: NetworkNode) {
-    return !!start.map[destination.name].viaNode;
+    return !!start.map[destination.name] && !!start.map[destination.name].viaNode;
   }
 }

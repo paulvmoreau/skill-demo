@@ -2,12 +2,29 @@
   display: flex;
   height: 100%;
   width: 100%;
+  overflow: scroll;
 }
+
 #chartdiv {
-  height: 500px;
+  height: 400px;
   width: 1000px;
 }
+
 .trace {
   height: 100%;
-  width: 100px;
+  width: 200px;
+
+  table {
+    width: 100%;
+    margin-top: 10px;
+  }
+}
+
+.mat-column-from, .mat-column-to {
+  width: 30px;
+  padding-right: 5px;
+}
+
+.mat-column-distance {
+  text-align: end;
 }

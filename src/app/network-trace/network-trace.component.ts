@@ -30,6 +30,7 @@ export class NetworkTraceComponent implements OnInit {
   }
 
   private buildNetwork() {
+    console.log('build network');
     let name = 'A';
     for (let i = 0; i < this.nodeCount; i++) {
       this.nodes.push(new NetworkNode(name, this.maxX, this.maxY));
@@ -42,7 +43,7 @@ export class NetworkTraceComponent implements OnInit {
         for (let i = 0; i < connectionCount; i++) {
           const targetNodeIndex = Math.floor(Math.random() * this.nodeCount);
           const targetNode = this.nodes[targetNodeIndex];
-          if (node.hasDirectConnection(targetNode.name)) {
+          if (node.isSelf(targetNode.name)) {
             i--;
           } else {
             targetNode.addConnection(node);

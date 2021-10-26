@@ -1,8 +1,9 @@
 .overall-container {
-  height: 100%;
+  height: calc(100% - 40px);
   display: flex;
   flex-flow: column;
   padding: 20px;
+  overflow: scroll;
 }
 
 .header {
@@ -16,7 +17,6 @@
 }
 
 .nodes-container {
-  padding: 20px;
   flex-grow: 1;
   display: flex;
   justify-content: center;

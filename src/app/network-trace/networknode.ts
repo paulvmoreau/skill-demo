@@ -34,8 +34,8 @@ export class NetworkNode {
     return this.map$.asObservable();
   }
 
-  hasDirectConnection(nodeName: string): boolean {
-    return (!!this.map[nodeName] && this.map[nodeName].viaNode === this.name) || nodeName === this.name;
+  isSelf(nodeName: string): boolean {
+    return nodeName === this.name;
   }
 
   addConnection(node: NetworkNode) {
