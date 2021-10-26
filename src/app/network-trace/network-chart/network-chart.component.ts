@@ -191,7 +191,9 @@ export class NetworkChartComponent implements OnInit {
     this.trace = [start];
     this.tableTrace = [];
     if (destination) {
-      this.traceDistance = start.map[destination.name].distance;
+      if (start.map[destination.name]) {
+        this.traceDistance = start.map[destination.name].distance;
+      }
       if (!NetworkChartComponent.checkForConnection(start, destination)) {
         this.trace = [];
         this.noConnectionError = true;
