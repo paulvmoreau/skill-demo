@@ -13,7 +13,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { NetworkChartComponent } from './network-trace/network-chart/network-chart.component';
 import {MatInputModule} from '@angular/material/input';
-import {FormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatSliderModule} from "@angular/material/slider";
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 import {AngularFireModule} from "@angular/fire/compat";
@@ -21,6 +21,8 @@ import {AngularFirestoreModule} from "@angular/fire/compat/firestore";
 import {AngularFireAuthModule} from "@angular/fire/compat/auth";
 import {AngularFireStorageModule} from "@angular/fire/compat/storage";
 import {MatTableModule} from "@angular/material/table";
+import { HomeComponent } from './home/home.component';
+import {MatCardModule} from "@angular/material/card";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBi0LvdNZleOvpPpZv9EXsQ9YqQ-aZRcaM",
@@ -38,27 +40,30 @@ const firebaseConfig = {
     NetworkTraceComponent,
     NavBannerComponent,
     AppFooterComponent,
-    NetworkChartComponent
+    NetworkChartComponent,
+    HomeComponent
   ],
-    imports: [
-        BrowserModule,
-        AppRoutingModule,
-        MatToolbarModule,
-        BrowserAnimationsModule,
-        MatIconModule,
-        MatButtonModule,
-        MatMenuModule,
-        MatInputModule,
-        FormsModule,
-        MatSliderModule,
-        MatProgressSpinnerModule,
-        AngularFireModule.initializeApp(firebaseConfig),
-        AngularFirestoreModule, // firestore
-        AngularFireAuthModule, // auth
-        AngularFireStorageModule,
-        MatTableModule,
-        // storage
-    ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    MatToolbarModule,
+    BrowserAnimationsModule,
+    MatIconModule,
+    MatButtonModule,
+    MatMenuModule,
+    MatInputModule,
+    FormsModule,
+    MatSliderModule,
+    MatProgressSpinnerModule,
+    AngularFireModule.initializeApp(firebaseConfig),
+    AngularFirestoreModule, // firestore
+    AngularFireAuthModule, // auth
+    AngularFireStorageModule,
+    MatTableModule,
+    MatCardModule,
+    ReactiveFormsModule,
+    // storage
+  ],
   providers: [],
   bootstrap: [AppComponent]
 })

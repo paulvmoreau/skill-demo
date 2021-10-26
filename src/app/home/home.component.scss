@@ -1,0 +1,14 @@
+.overall-container {
+  width: 100%;
+  height: 100%;
+  background-image: url("/assets/backgrounds/pexels-negative-space-160107.jpg");
+  background-size: cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+mat-card {
+  width: 400px;
+  opacity: 0.8;
+}

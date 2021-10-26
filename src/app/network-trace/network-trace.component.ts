@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NetworkNode } from './networknode';
+import {FormControl, Validators} from "@angular/forms";
 
 @Component({
   selector: 'app-network-trace',
@@ -7,6 +8,7 @@ import { NetworkNode } from './networknode';
   styleUrls: ['./network-trace.component.scss']
 })
 export class NetworkTraceComponent implements OnInit {
+  maxNodes: number = 200;
   nodes: NetworkNode[] = [];
   showChart: boolean = false;
   nodeCount = 25;
@@ -14,6 +16,9 @@ export class NetworkTraceComponent implements OnInit {
 
   private maxX: number = 90;
   private maxY: number = 90;
+  nodeCountFormControl = new FormControl('', [
+    Validators.max(this.maxNodes),
+  ]);
 
   constructor() { }
 

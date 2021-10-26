@@ -3,14 +3,20 @@
     Network Trace Excersize
   </div>
   <div class="sub-header">
-    This exercise generates a network with n nodes, each with variable distances between them.
+    This exercise generates a network with {{nodeCount}} nodes, each with variable distances between them.
     Each node will only originally know the distance to direct connections with other nodes.
     Nodes will transmit their distance maps, iterarively determining the shortest distance between nodes.
   </div>
   <div class="inputs">
     <mat-form-field class="network variables">
       <mat-label>Nodes</mat-label>
-      <input matInput type="text" [(ngModel)]="nodeCount">
+      <input matInput
+             type="number"
+             [formControl]="nodeCountFormControl"
+             [(ngModel)]="nodeCount">
+      <mat-error *ngIf="nodeCountFormControl.hasError('max') && !nodeCountFormControl.hasError('required')">
+        For performance reasons, Node count is limited to 200 nodes.
+      </mat-error>
     </mat-form-field>
     <div class="connection-complexity-container">
       <label id="complexity-label">Connection Complexity</label>
@@ -23,7 +29,9 @@
         aria-labelledby="Connection complexity">
       </mat-slider>
     </div>
-    <button mat-stroked-button color="primary" (click)="redrawGraph()">
+    <button mat-stroked-button color="primary"
+            [disabled]="nodeCount > maxNodes"
+            (click)="redrawGraph()">
       Redraw Graph
       <mat-icon>refresh</mat-icon>
     </button>

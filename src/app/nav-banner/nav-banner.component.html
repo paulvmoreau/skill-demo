@@ -6,7 +6,11 @@
 </mat-toolbar>
 
 <mat-menu #menu="matMenu">
-	<button mat-menu-item routerLink="/network">
+  <button mat-menu-item routerLink="/">
+    <mat-icon aria-hidden="true">home</mat-icon>
+    <span>Home</span>
+  </button>
+  <button mat-menu-item routerLink="/network">
 		<mat-icon aria-hidden="true">language</mat-icon>
 		<span>Network Trace</span>
 	</button>
