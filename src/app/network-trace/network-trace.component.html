@@ -30,15 +30,21 @@
         aria-labelledby="Connection complexity">
       </mat-slider>
     </div>
+    <button mat-button color="primary"
+            [disabled]="nodeCount >= maxNodes"
+            (click)="addNode()">
+      <mat-icon>add</mat-icon>
+      Add Node
+    </button>
     <button mat-stroked-button color="primary"
             [disabled]="nodeCount > maxNodes"
             (click)="redrawGraph()">
-      Redraw Graph
       <mat-icon>refresh</mat-icon>
+      Redraw Graph
     </button>
   </div>
   <div class="nodes-container" *ngIf="showChart">
-    <app-network-chart [nodes]="nodes"></app-network-chart>
+    <app-network-chart [nodes]="nodes" [addNode]="addNodeObs"></app-network-chart>
   </div>
   <div class="loading" *ngIf="!showChart">
     <mat-spinner></mat-spinner>

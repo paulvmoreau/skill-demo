@@ -1,4 +1,4 @@
-import {Observable, Subject} from 'rxjs';
+import {BehaviorSubject, Observable, Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 
 export interface MapNode {
@@ -16,8 +16,9 @@ export class NetworkNode {
   directConnectionCount: number = 0;
   directConnection: NetworkNode[] = [];
 
-  private map$: Subject<{ [key: string]: MapNode }> = new Subject<{ [key: string]: MapNode }>();
+  private map$: BehaviorSubject<{ [key: string]: MapNode }> = new BehaviorSubject<{ [key: string]: MapNode }>({});
   private destroy$: Subject<void> = new Subject<void>();
+  dataLogger: Subject<any> = new Subject<any>();
 
   constructor(name: string, maxXCoord: number, maxYCoord: number) {
     this.name = name;
@@ -41,7 +42,9 @@ export class NetworkNode {
   addConnection(node: NetworkNode) {
     node.mapObs.pipe(takeUntil(this.destroy$))
       .subscribe((map) => {
-        this.checkMap(map, node.name)
+        if (this.map[node.name]) {
+          this.checkMap(map, node.name)
+        }
       });
     const deltaX = Math.abs(this.x - node.x);
     const deltaY = Math.abs(this.y - node.y);

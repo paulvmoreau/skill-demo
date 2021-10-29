@@ -22,6 +22,7 @@ interface TableTrace {
 })
 export class NetworkChartComponent implements OnInit {
   @Input() nodes!: NetworkNode[];
+  @Input() addNode!: Observable<NetworkNode>;
 
   twoPointTrace: NetworkNode[] = [];
   trace: NetworkNode[] = [];
@@ -30,11 +31,12 @@ export class NetworkChartComponent implements OnInit {
   displayedColumns: string[] = ['from', 'to', 'distance'];
   traceDistance: number = 0;
   tableTrace$: Subject<TableTrace[]> = new Subject<TableTrace[]>();
-  private _tableTraceObs: Observable<TableTrace[]> = this.tableTrace$.asObservable();
 
+  private _tableTraceObs: Observable<TableTrace[]> = this.tableTrace$.asObservable();
   private traceSeries!: LineSeries;
   private chart!: XYChart;
   private networkSeries!: LineSeries;
+  private connections: LineSeries[] = [];
 
   constructor() {
   }
@@ -45,6 +47,11 @@ export class NetworkChartComponent implements OnInit {
 
   ngOnInit(): void {
     this.buildChart();
+    if (this.addNode) {
+      this.addNode.subscribe((node) => {
+        this.addNodeToChart(node);
+      })
+    }
   }
 
   private buildChart() {
@@ -63,19 +70,7 @@ export class NetworkChartComponent implements OnInit {
     NetworkChartComponent.createAxis(this.chart.yAxes);
 
     this.createNodes('nodes', this.nodes);
-    this.nodes.forEach((node) => {
-      node.directConnection.forEach((connection) => {
-        this.createLine([
-          {
-            x: node.x,
-            y: node.y
-          }, {
-            x: connection.x,
-            y: connection.y
-          }
-        ])
-      })
-    })
+    this.drawConnections();
   }
 
   private createNodes(name: string, data: any[]) {
@@ -99,6 +94,7 @@ export class NetworkChartComponent implements OnInit {
         this.highlightBullet(ev.target.dataItem.dataContext as NetworkNode);
       }
     });
+
     let labelBullet = this.networkSeries.bullets.push(new am4charts.LabelBullet());
     labelBullet.label.text = '{name}'
     labelBullet.label.fontSize = 10;
@@ -154,6 +150,7 @@ export class NetworkChartComponent implements OnInit {
     series.tensionX = 0.5;
     series.tensionY = 0.5;
     series.zIndex = 1;
+    this.connections.push(series);
   }
 
   private static createAxis(list: any) {
@@ -191,14 +188,12 @@ export class NetworkChartComponent implements OnInit {
     this.trace = [start];
     this.tableTrace = [];
     if (destination) {
-      if (start.map[destination.name]) {
-        this.traceDistance = start.map[destination.name].distance;
-      }
       if (!NetworkChartComponent.checkForConnection(start, destination)) {
         this.trace = [];
         this.noConnectionError = true;
         return;
       } else {
+        this.traceDistance = start.map[destination.name].distance;
         this.noConnectionError = false;
       }
 
@@ -222,14 +217,14 @@ export class NetworkChartComponent implements OnInit {
           })[0];
           this.trace.push(nextNode);
           const viaNode = nextNode.map[destination.name].viaNode
-          if (lead === viaNode) { // direct connection
-            lead = destination.name;
+          if (lead === viaNode) { // last connection
             this.trace.push(destination);
             this.tableTrace.push({
               from: lead,
               to: destination.name,
               distance: nextNode.map[destination.name].distance
             })
+            lead = destination.name;
           } else {
             this.tableTrace.push({
               from: lead,
@@ -248,5 +243,36 @@ export class NetworkChartComponent implements OnInit {
 
   private static checkForConnection(start: NetworkNode, destination: NetworkNode) {
     return !!start.map[destination.name] && !!start.map[destination.name].viaNode;
+  }
+
+  private addNodeToChart(node: NetworkNode) {
+    this.networkSeries.data = this.nodes;
+    node.directConnection.forEach((connection) => {
+      this.createLine([
+        {
+          x: node.x,
+          y: node.y
+        }, {
+          x: connection.x,
+          y: connection.y
+        }
+      ])
+    });
+  }
+
+  private drawConnections() {
+    this.nodes.forEach((node) => {
+      node.directConnection.forEach((connection) => {
+        this.createLine([
+          {
+            x: node.x,
+            y: node.y
+          }, {
+            x: connection.x,
+            y: connection.y
+          }
+        ])
+      })
+    })
   }
 }
