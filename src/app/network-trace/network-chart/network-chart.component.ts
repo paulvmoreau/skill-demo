@@ -190,6 +190,8 @@ export class NetworkChartComponent implements OnInit {
     if (destination) {
       if (!NetworkChartComponent.checkForConnection(start, destination)) {
         this.trace = [];
+        this.tableTrace = [];
+        this.traceSeries.hide();
         this.noConnectionError = true;
         return;
       } else {
