@@ -23,6 +23,7 @@ import {AngularFireStorageModule} from "@angular/fire/compat/storage";
 import {MatTableModule} from "@angular/material/table";
 import { HomeComponent } from './home/home.component';
 import {MatCardModule} from "@angular/material/card";
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 const firebaseConfig = {
   apiKey: "AIzaSyBi0LvdNZleOvpPpZv9EXsQ9YqQ-aZRcaM",
@@ -62,6 +63,7 @@ const firebaseConfig = {
     MatTableModule,
     MatCardModule,
     ReactiveFormsModule,
+    FontAwesomeModule,
     // storage
   ],
   providers: [],

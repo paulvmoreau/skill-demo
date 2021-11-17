@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {faGithub, faLinkedin} from "@fortawesome/free-brands-svg-icons";
 
 @Component({
   selector: 'app-nav-banner',
@@ -6,10 +7,12 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./nav-banner.component.scss']
 })
 export class NavBannerComponent implements OnInit {
+  faGitHub = faGithub;
+  faLi = faLinkedin;
 
-  constructor() { }
+  constructor() {
+  }
 
   ngOnInit(): void {
   }
-
 }
