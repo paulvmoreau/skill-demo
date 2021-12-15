@@ -1,0 +1,99 @@
+.overall-container {
+  padding: 0 15px;
+  display: flex;
+  flex-flow: column nowrap;
+  height: 100%;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: 500;
+  margin-top: 10px;
+}
+
+.description {
+  margin-top: 5px;
+  font-size: 14px;
+  font-weight: 300;
+}
+
+.simulation-container {
+  flex-grow: 1;
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+.grid-container {
+  width: 100%;
+  flex-grow: 1;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  margin-top: 20px;
+
+  .description {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    margin-right: 3px;
+  }
+
+  .player {
+    display: flex;
+    align-items: center;
+  }
+}
+
+.refresh-container {
+  margin-right: 5px;
+  height: 50px;
+  display: flex;
+
+  mat-form-field {
+    margin-right: 10px;
+    width: 90px;
+  }
+}
+
+::ng-deep.grid {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-flow: column nowrap;
+
+  .row {
+    width: 100%;
+    display: flex;
+    flex-flow: row nowrap;
+    flex-grow: 1;
+  }
+
+  .cell {
+    flex-grow: 1;
+    background: black;
+    color: white;
+    cursor: pointer;
+    border: 1px solid grey;
+    font-size: 10px;
+    line-height: 10px;
+
+    &:hover {
+      background: grey;
+    }
+
+    &.live {
+      background: white;
+      color: black;
+    }
+  }
+
+  &.borderless {
+    .cell {
+      border: none;
+    }
+  }
+}

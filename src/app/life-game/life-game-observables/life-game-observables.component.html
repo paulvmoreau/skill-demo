@@ -1,0 +1,12 @@
+<div class="grid">
+  <ng-container *ngFor="let row of rows">
+    <div class="row">
+      <ng-container *ngFor="let col of row">
+        <div class="cell"
+             [ngClass]="{live: col.alive}"
+             (click)="col.toggleSelf()">
+        </div>
+      </ng-container>
+    </div>
+  </ng-container>
+</div>

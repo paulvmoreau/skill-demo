@@ -24,6 +24,10 @@ import {MatTableModule} from "@angular/material/table";
 import { HomeComponent } from './home/home.component';
 import {MatCardModule} from "@angular/material/card";
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { LifeGameComponent } from './life-game/life-game.component';
+import { LifeGameObservablesComponent } from './life-game/life-game-observables/life-game-observables.component';
+import { LifeGameBruteForceComponent } from './life-game/life-game-brute-force/life-game-brute-force.component';
+import {MatButtonToggleModule} from "@angular/material/button-toggle";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBi0LvdNZleOvpPpZv9EXsQ9YqQ-aZRcaM",
@@ -42,30 +46,34 @@ const firebaseConfig = {
     NavBannerComponent,
     AppFooterComponent,
     NetworkChartComponent,
-    HomeComponent
+    HomeComponent,
+    LifeGameComponent,
+    LifeGameObservablesComponent,
+    LifeGameBruteForceComponent
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    MatToolbarModule,
-    BrowserAnimationsModule,
-    MatIconModule,
-    MatButtonModule,
-    MatMenuModule,
-    MatInputModule,
-    FormsModule,
-    MatSliderModule,
-    MatProgressSpinnerModule,
-    AngularFireModule.initializeApp(firebaseConfig),
-    AngularFirestoreModule, // firestore
-    AngularFireAuthModule, // auth
-    AngularFireStorageModule,
-    MatTableModule,
-    MatCardModule,
-    ReactiveFormsModule,
-    FontAwesomeModule,
-    // storage
-  ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        MatToolbarModule,
+        BrowserAnimationsModule,
+        MatIconModule,
+        MatButtonModule,
+        MatMenuModule,
+        MatInputModule,
+        FormsModule,
+        MatSliderModule,
+        MatProgressSpinnerModule,
+        AngularFireModule.initializeApp(firebaseConfig),
+        AngularFirestoreModule, // firestore
+        AngularFireAuthModule, // auth
+        AngularFireStorageModule,
+        MatTableModule,
+        MatCardModule,
+        ReactiveFormsModule,
+        FontAwesomeModule,
+        MatButtonToggleModule,
+        // storage
+    ],
   providers: [],
   bootstrap: [AppComponent]
 })

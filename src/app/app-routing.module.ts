@@ -2,6 +2,7 @@ import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {NetworkTraceComponent} from './network-trace/network-trace.component';
 import {HomeComponent} from "./home/home.component";
+import {LifeGameComponent} from "./life-game/life-game.component";
 
 const routes: Routes = [{
   path: '',
@@ -9,6 +10,9 @@ const routes: Routes = [{
 }, {
   path: 'network',
   component: NetworkTraceComponent
+}, {
+  path: 'life-game',
+  component: LifeGameComponent
 }];
 
 @NgModule({

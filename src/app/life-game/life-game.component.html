@@ -1,0 +1,89 @@
+<div class="overall-container">
+  <div class="header">
+    <div class="title">John Conway's Game of life</div>
+    <div class="description">
+      This is a simple simulation game created by Mathematician John Horton Conway. Each cell is either living (light)
+      or dead (dark). If a dead square has exactly 3 living neighbours then it comes to life.
+      If a living square has less than 2 or more than 3 neighbours, it dies.
+    </div>
+    <div class="description">
+      To set up the game, click the cells and click play to start the simulation.
+      you may pause or reset the simulation at any time.
+    </div>
+  </div>
+
+  <div class="simulation-container">
+    <div class="actions">
+      <div class="player">
+        <button mat-button
+                [disabled]="running"
+                (click)="start()">
+          <mat-icon>play_arrow</mat-icon>
+        </button>
+        <button mat-button
+                [disabled]="running"
+                (click)="step()">
+          <mat-icon>skip_next</mat-icon>
+        </button>
+        <button mat-button
+                [disabled]="!running"
+                (click)="stop()">
+          <mat-icon>stop</mat-icon>
+        </button>
+        <button mat-button
+                [disabled]="running"
+                (click)="clear()">
+          <mat-icon>restart_alt</mat-icon>
+        </button>
+        <div class="refresh-container">
+          <mat-form-field class="refresh">
+            <mat-label>Refresh Rate</mat-label>
+            <span matSuffix>ms</span>
+            <input matInput [type]="'number'" [(ngModel)]="refreshRate" min="1">
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Starting Width</mat-label>
+            <input matInput [type]="'number'" [(ngModel)]="initialColumns" min="2">
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Starting height</mat-label>
+            <input matInput [type]="'number'" [(ngModel)]="initialRows" min="2">
+          </mat-form-field>
+          <div class="description">
+            Grid Type:
+          </div>
+          <mat-button-toggle-group [(ngModel)]="gridType" aria-label="Select Grid type">
+            <mat-button-toggle [value]="true">Expanding</mat-button-toggle>
+            <mat-button-toggle [value]="false">Looped</mat-button-toggle>
+          </mat-button-toggle-group>
+        </div>
+      </div>
+      <mat-button-toggle-group [(ngModel)]="processingType" aria-label="Select processing type">
+        <mat-button-toggle value="brute">Brute Force</mat-button-toggle>
+        <mat-button-toggle value="obs">Observables</mat-button-toggle>
+      </mat-button-toggle-group>
+    </div>
+    <div class="grid-container">
+      <ng-container *ngIf="processingType === 'brute'">
+        <app-life-game-brute-force
+          [refreshRate]="refreshRate"
+          [startObs]="startObs"
+          [stopObs]="stopObs"
+          [initialRows]="initialRows"
+          [initialColumns]="initialColumns">
+        </app-life-game-brute-force>
+      </ng-container>
+      <ng-container *ngIf="processingType === 'obs'">
+        <app-life-game-observables
+          [refreshRate]="refreshRate"
+          [startObs]="startObs"
+          [stepObs]="stepObs"
+          [stopObs]="stopObs"
+          [initialRows]="initialRows"
+          [initialColumns]="initialColumns"
+          [expand]="gridType">
+        </app-life-game-observables>
+      </ng-container>
+    </div>
+  </div>
+</div>
