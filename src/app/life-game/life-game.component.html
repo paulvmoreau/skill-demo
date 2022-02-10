@@ -57,31 +57,75 @@
             <mat-button-toggle [value]="false">Looped</mat-button-toggle>
           </mat-button-toggle-group>
         </div>
+        <button mat-button [matMenuTriggerFor]="presetsMenu">Presets</button>
+        <mat-menu #presetsMenu="matMenu">
+          <ng-template matMenuContent>
+            <ng-container *ngFor="let category of presetCategories">
+              <button mat-menu-item [matMenuTriggerFor]="presetsSubMenu" [matMenuTriggerData]="{presets: presets[category]}">
+                {{category}}
+              </button>
+              <mat-menu #presetsSubMenu="matMenu">
+                <ng-template matMenuContent let-presets="presets">
+                  <ng-container *ngFor="let preset of presets">
+                    <button mat-menu-item (click)="loadPreset(preset)">
+                      {{preset.name}}
+                    </button>
+                  </ng-container>
+                </ng-template>
+              </mat-menu>
+            </ng-container>
+          </ng-template>
+        </mat-menu>
       </div>
       <mat-button-toggle-group [(ngModel)]="processingType" aria-label="Select processing type">
         <mat-button-toggle value="brute">Brute Force</mat-button-toggle>
         <mat-button-toggle value="obs">Observables</mat-button-toggle>
       </mat-button-toggle-group>
     </div>
+    <div class="preset-save" *ngIf="isAdmin">
+      <mat-form-field>
+        <mat-label>Preset name</mat-label>
+        <input matInput placeholder="name" [(ngModel)]="name">
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>{{category}}</mat-label>
+        <mat-select [(value)]="category">
+          <ng-container *ngFor="let cat of categories">
+            <mat-option [value]="cat">{{cat}}</mat-option>
+          </ng-container>
+        </mat-select>
+      </mat-form-field>
+      <button mat-button mat-flat-button
+              [disabled]="running"
+              (click)="savePreset()">
+        Save preset
+      </button>
+    </div>
     <div class="grid-container">
       <ng-container *ngIf="processingType === 'brute'">
         <app-life-game-brute-force
-          [refreshRate]="refreshRate"
-          [startObs]="startObs"
-          [stopObs]="stopObs"
+          [expand]="gridType"
+          [initialColumns]="initialColumns"
           [initialRows]="initialRows"
-          [initialColumns]="initialColumns">
-        </app-life-game-brute-force>
-      </ng-container>
-      <ng-container *ngIf="processingType === 'obs'">
-        <app-life-game-observables
           [refreshRate]="refreshRate"
           [startObs]="startObs"
           [stepObs]="stepObs"
           [stopObs]="stopObs"
-          [initialRows]="initialRows"
+          [savePresetObs]="saveToPresetObs"
+          [setPresetObs]="setPresetObs">
+        </app-life-game-brute-force>
+      </ng-container>
+      <ng-container *ngIf="processingType === 'obs'">
+        <app-life-game-observables
+          [expand]="gridType"
           [initialColumns]="initialColumns"
-          [expand]="gridType">
+          [initialRows]="initialRows"
+          [refreshRate]="refreshRate"
+          [startObs]="startObs"
+          [stepObs]="stepObs"
+          [stopObs]="stopObs"
+          [savePresetObs]="saveToPresetObs"
+          [setPresetObs]="setPresetObs">
         </app-life-game-observables>
       </ng-container>
     </div>

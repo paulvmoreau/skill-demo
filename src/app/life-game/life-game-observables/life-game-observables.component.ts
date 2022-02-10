@@ -1,14 +1,16 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
 import {Observable, Subject} from "rxjs";
 import {takeUntil} from "rxjs/operators";
 import {LifeGameCell} from "./life-game-cell";
+import {LifeGameService} from "../life-game.service";
+import {LifeGameConfig} from "./life-game-config";
 
 @Component({
   selector: 'app-life-game-observables',
   templateUrl: './life-game-observables.component.html',
   styleUrls: ['./life-game-observables.component.scss']
 })
-export class LifeGameObservablesComponent implements OnInit, OnDestroy {
+export class LifeGameObservablesComponent implements OnInit, OnDestroy, OnChanges {
   @Input() refreshRate?: number;
   @Input() initialRows = 30;
   @Input() initialColumns = 30;
@@ -16,16 +18,18 @@ export class LifeGameObservablesComponent implements OnInit, OnDestroy {
   @Input() startObs?: Observable<void>;
   @Input() stepObs?: Observable<void>;
   @Input() stopObs?: Observable<void>;
+  @Input() savePresetObs?: Observable<{ name: string, looped: boolean, category: string }>;
+  @Input() setPresetObs?: Observable<LifeGameConfig>;
 
   rows: LifeGameCell[][] = [];
 
   private timer?: number;
   private destroy$: Subject<void> = new Subject<void>();
-  private stepper: Subject<void> = new Subject<void>();
+  private stepper$: Subject<void> = new Subject<void>();
   private width: number = 0;
   private height: number = 0;
 
-  constructor() {
+  constructor(private lifeGameService: LifeGameService) {
   }
 
   ngOnInit(): void {
@@ -53,6 +57,20 @@ export class LifeGameObservablesComponent implements OnInit, OnDestroy {
           this.stop();
         });
     }
+    if (this.savePresetObs) {
+      this.savePresetObs
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((data) => {
+          this.savePreset(data.name, data.looped, data.category);
+        });
+    }
+    if (this.setPresetObs) {
+      this.setPresetObs
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((data: LifeGameConfig) => {
+          this.setPreset(data.aliveCoords);
+        });
+    }
   }
 
   ngOnDestroy() {
@@ -61,6 +79,12 @@ export class LifeGameObservablesComponent implements OnInit, OnDestroy {
     }
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.expand && !changes.expand.firstChange) {
+      this.rewireConnections();
+    }
   }
 
   run() {
@@ -76,11 +100,11 @@ export class LifeGameObservablesComponent implements OnInit, OnDestroy {
     clearInterval(this.timer);
   }
 
-  private step() {
+  step() {
     if (this.expand) {
       this.checkEdges()
     }
-    this.stepper.next();
+    this.stepper$.next();
   }
 
   private buildGrid() {
@@ -90,7 +114,7 @@ export class LifeGameObservablesComponent implements OnInit, OnDestroy {
     }
     this.rows = this.rows.map((row, rowIndex) => {
       for (let i = 0; i < this.initialColumns; i++) {
-        row.push(new LifeGameCell(rowIndex, i, this.stepper.asObservable(), this.destroy$));
+        row.push(new LifeGameCell(rowIndex, i, this.stepper$.asObservable(), this.destroy$));
       }
       return row;
     })
@@ -139,23 +163,23 @@ export class LifeGameObservablesComponent implements OnInit, OnDestroy {
     if (leftEdge || rightEdge) {
       this.rows.forEach((row) => {
         if (leftEdge) {
-          row.unshift(new LifeGameCell(row[0].row, firstCol - 1, this.stepper, this.destroy$));
+          row.unshift(new LifeGameCell(row[0].row, firstCol - 1, this.stepper$, this.destroy$));
         }
         if (rightEdge) {
-          row.push(new LifeGameCell(row[0].row, lastCol, this.stepper, this.destroy$));
+          row.push(new LifeGameCell(row[0].row, lastCol, this.stepper$, this.destroy$));
         }
       });
     }
     if (topEdge) {
       this.rows.unshift([]);
       for (let i = 0; i < this.rows[1].length; i++) {
-        this.rows[0].push(new LifeGameCell(firstRow - 1, firstCol - 1 + i, this.stepper, this.destroy$));
+        this.rows[0].push(new LifeGameCell(firstRow - 1, firstCol - 1 + i, this.stepper$, this.destroy$));
       }
     }
     if (bottomEdge) {
       this.rows.push([]);
       for (let i = 0; i < this.rows[1].length; i++) {
-        this.rows[this.rows.length - 1].push(new LifeGameCell(lastRow, firstCol + i, this.stepper, this.destroy$));
+        this.rows[this.rows.length - 1].push(new LifeGameCell(lastRow, firstCol + i, this.stepper$, this.destroy$));
       }
     }
     this.connectCells();
@@ -202,8 +226,48 @@ export class LifeGameObservablesComponent implements OnInit, OnDestroy {
     })
   }
 
-  connectNeightbours(cellA: LifeGameCell, cellB: LifeGameCell) {
+  private connectNeightbours(cellA: LifeGameCell, cellB: LifeGameCell) {
     cellA.addNeighbour(cellB);
     cellB.addNeighbour(cellA);
+  }
+
+  private savePreset(name: string, looped: boolean, category: string) {
+    const preset: LifeGameConfig = {
+      name,
+      looped,
+      height: this.height,
+      width: this.width,
+      category,
+      aliveCoords: this.extractAliveCoords()
+    }
+    this.lifeGameService.savePreset(preset);
+  }
+
+  private extractAliveCoords(): {x: number, y: number}[] {
+    const aliveCoords: { x: number; y: number; }[] = [];
+    this.rows.forEach(row => {
+      row.forEach(cell => {
+        if (cell.alive) {
+          aliveCoords.push({
+            x: cell.col,
+            y: cell.row
+          })
+        }
+      })
+    })
+    return aliveCoords;
+  }
+
+  private setPreset(aliveCoords: {x: number, y: number}[]) {
+    aliveCoords.forEach((point) => {
+      this.rows[point.y][point.x].toggleSelf();
+    })
+  }
+
+  private rewireConnections() {
+    const aliveCoords = this.extractAliveCoords();
+    this.rows = [];
+    this.buildGrid();
+    this.setPreset(aliveCoords);
   }
 }

@@ -59,6 +59,14 @@
   }
 }
 
+.preset-save {
+  display: flex;
+  align-items: center;
+  mat-form-field {
+    margin-right: 10px;
+  }
+}
+
 ::ng-deep.grid {
   height: 100%;
   width: 100%;

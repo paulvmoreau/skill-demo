@@ -2,6 +2,8 @@ import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {cloneDeep} from "lodash";
 import {Observable, Subject} from "rxjs";
 import {takeUntil} from "rxjs/operators";
+import {LifeGameConfig} from "../life-game-observables/life-game-config";
+import {LifeGameService} from "../life-game.service";
 
 @Component({
   selector: 'app-life-game-brute-force',
@@ -14,12 +16,16 @@ export class LifeGameBruteForceComponent implements OnInit, OnDestroy {
   @Input() initialColumns = 10;
   @Input() startObs?: Observable<void>;
   @Input() stopObs?: Observable<void>;
+  @Input() expand: boolean = false;
+  @Input() stepObs?: Observable<void>;
+  @Input() savePresetObs?: Observable<{ name: string, looped: boolean, category: string }>;
+  @Input() setPresetObs?: Observable<LifeGameConfig>;
 
   rows: boolean[][] = [];
   private timer?: number;
   private destroy$: Subject<void> = new Subject<void>();
 
-  constructor() {
+  constructor(private lifeGameService: LifeGameService) {
   }
 
   ngOnInit(): void {
@@ -31,11 +37,32 @@ export class LifeGameBruteForceComponent implements OnInit, OnDestroy {
           this.run();
         });
     }
+    if (this.stepObs) {
+      this.stepObs
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(() => {
+          this.step();
+        });
+    }
     if (this.stopObs) {
       this.stopObs
         .pipe(takeUntil(this.destroy$))
         .subscribe(() => {
           this.stop();
+        });
+    }
+    if (this.savePresetObs) {
+      this.savePresetObs
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((data) => {
+          this.savePreset(data.name, data.looped, data.category);
+        });
+    }
+    if (this.setPresetObs) {
+      this.setPresetObs
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((data) => {
+          this.setPreset(data);
         });
     }
   }
@@ -80,7 +107,9 @@ export class LifeGameBruteForceComponent implements OnInit, OnDestroy {
 
   private step() {
     if (this.checkEdges()) {
-      this.addRowsCols();
+      if (this.expand) {
+        this.addRowsCols();
+      }
     }
     const clone = cloneDeep(this.rows);
     this.rows = clone.map((row, rowIndex) => {
@@ -93,11 +122,30 @@ export class LifeGameBruteForceComponent implements OnInit, OnDestroy {
   private checkCell(cell: boolean, rowIndex: number, colIndex: number): boolean {
     let liveCount = 0;
     for (let i = rowIndex - 1; i <= rowIndex + 1; i++) {
-      if (this.rows[i]) {
+      let iIndex = i;
+      if (!this.expand) {
+        if (iIndex >= this.rows.length) {
+          iIndex = 0;
+        }
+        if (iIndex < 0) {
+          iIndex = this.rows.length - 1;
+        }
+      }
+      if (this.rows[iIndex]) {
         for (let j = colIndex - 1; j <= colIndex + 1; j++) {
-          if (i === rowIndex && j === colIndex) {
-          } else if (this.rows[i][j]) {
-            liveCount++;
+          if (!(i === rowIndex && j === colIndex)) {
+            let jIndex = j;
+            if (!this.expand) {
+              if (jIndex === this.rows[iIndex].length) {
+                jIndex = 0;
+              }
+              if (jIndex < 0) {
+                jIndex = this.rows[iIndex].length - 1;
+              }
+            }
+            if (this.rows[iIndex][jIndex]) {
+              liveCount++;
+            }
           }
         }
       }
@@ -110,7 +158,14 @@ export class LifeGameBruteForceComponent implements OnInit, OnDestroy {
   }
 
   private checkEdges() {
-    return this.rows[0].filter(cell => cell).length > 0 || this.rows.filter(row => row[0]).length > 0;
+    // check top and bottom row
+    if (this.rows[0].indexOf(true) > 0 || this.rows[this.rows.length - 1].indexOf(true) > 0) {
+      return true;
+    }
+    // check left and right column
+    return this.rows.filter((row) => {
+      return row[0] || row[row.length - 1];
+    }).length > 0;
   }
 
   private addRowsCols() {
@@ -128,4 +183,36 @@ export class LifeGameBruteForceComponent implements OnInit, OnDestroy {
     this.rows.push(cloneDeep(blankRow));
   }
 
+  private savePreset(name: string, looped: boolean, category: string) {
+    const preset: LifeGameConfig = {
+      name,
+      looped,
+      height: this.rows.length,
+      width: this.rows[0].length,
+      category,
+      aliveCoords: this.extractAliveCoords()
+    }
+    this.lifeGameService.savePreset(preset);
+  }
+
+  private extractAliveCoords(): { x: number, y: number }[] {
+    const aliveCoords: { x: number; y: number; }[] = [];
+    this.rows.forEach((row, rowIndex) => {
+      row.forEach((cell, colIndex) => {
+        if (cell) {
+          aliveCoords.push({
+            x: colIndex,
+            y: rowIndex
+          })
+        }
+      })
+    })
+    return aliveCoords;
+  }
+
+  private setPreset(data: LifeGameConfig) {
+    data.aliveCoords.forEach((point) => {
+      this.rows[point.y][point.x] = true;
+    })
+  }
 }
