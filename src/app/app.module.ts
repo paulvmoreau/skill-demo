@@ -32,7 +32,6 @@ import {MatSelectModule} from "@angular/material/select";
 import {HttpClientModule} from "@angular/common/http";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBi0LvdNZleOvpPpZv9EXsQ9YqQ-aZRcaM",
   authDomain: "skill-demo-41dd3.firebaseapp.com",
   projectId: "skill-demo-41dd3",
   storageBucket: "skill-demo-41dd3.appspot.com",
