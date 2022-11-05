@@ -1,0 +1,30 @@
+<div>
+  According to <a href="https://docs.google.com/document/d/1IDNp7eH9wR8Xsr1UKIySnhWpFdubNN1LRCWYBbQpLdM/edit"
+                  target="_blank">
+  the Blood magic rules
+</a>
+  It is possible to out-heal incoming blood magic damage if you're a cleric with the right spells.
+  <br>
+  Combining <a href="https://www.dndbeyond.com/spells/beacon-of-hope" target="_blank">Beacon of Hope</a> with
+  <a href="https://www.dndbeyond.com/spells/cure-wounds" target="_blank">Cure Wounds</a>
+  will out-heal the damage incurred.
+</div>
+<div>
+  Use the Calculator below to determine how long it will take for Locken to Heal up the party and also heal up himself
+  to maximum health
+</div>
+<div>
+  <form [formGroup]="healingFG">
+    <label for="lockenDamage">Locken's Current Damage: </label>
+    <input id="lockenDamage" type="number" formControlName="lockenDamage">
+    <label for="partyDamage">Party's Current Damage: </label>
+    <input id="partyDamage" type="number" formControlName="partyDamage">
+    <label for="cureWoundsLevel">Cure Wounds level: </label>
+    <input id="cureWoundsLevel" type="number" formControlName="cureWoundsLevel">
+  </form>
+</div>
+<div>
+  <button mat-button color="primary" (click)="calculate()">
+    Calculate
+  </button>
+</div>

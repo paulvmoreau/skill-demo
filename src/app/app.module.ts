@@ -30,6 +30,7 @@ import {LifeGameBruteForceComponent} from './life-game/life-game-brute-force/lif
 import {MatButtonToggleModule} from "@angular/material/button-toggle";
 import {MatSelectModule} from "@angular/material/select";
 import {HttpClientModule} from "@angular/common/http";
+import { BloodMagicHealingCalculatorComponent } from './blood-magic-healing-calculator/blood-magic-healing-calculator.component';
 
 const firebaseConfig = {
   authDomain: "skill-demo-41dd3.firebaseapp.com",
@@ -50,7 +51,8 @@ const firebaseConfig = {
     HomeComponent,
     LifeGameComponent,
     LifeGameObservablesComponent,
-    LifeGameBruteForceComponent
+    LifeGameBruteForceComponent,
+    BloodMagicHealingCalculatorComponent
   ],
   imports: [
     BrowserModule,

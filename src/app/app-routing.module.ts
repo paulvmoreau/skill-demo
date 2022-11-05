@@ -3,6 +3,9 @@ import {RouterModule, Routes} from '@angular/router';
 import {NetworkTraceComponent} from './network-trace/network-trace.component';
 import {HomeComponent} from "./home/home.component";
 import {LifeGameComponent} from "./life-game/life-game.component";
+import {
+  BloodMagicHealingCalculatorComponent
+} from "./blood-magic-healing-calculator/blood-magic-healing-calculator.component";
 
 const routes: Routes = [{
   path: '',
@@ -13,6 +16,9 @@ const routes: Routes = [{
 }, {
   path: 'life-game',
   component: LifeGameComponent
+}, {
+  path: 'bm-calculator',
+  component: BloodMagicHealingCalculatorComponent
 }];
 
 @NgModule({
